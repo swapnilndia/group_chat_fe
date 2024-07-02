@@ -35,7 +35,7 @@ class chatService {
     try {
       const response: SendMessageResponse = await apiHelperFunction({
         method: "POST",
-        url: "http://localhost:3000/api/v1/chat/new-message",
+        url: "http://localhost:3000/api/v1/message/new-message",
         data: { message },
         includeAuth: true,
       });
@@ -51,7 +51,7 @@ class chatService {
     try {
       const response: ChatlistResponseType = await apiHelperFunction({
         method: "GET",
-        url: "http://localhost:3000/api/v1/chat/get-chatlist",
+        url: "http://localhost:3000/api/v1/message/get-messagelist",
         includeAuth: true,
       });
       console.log(response);
