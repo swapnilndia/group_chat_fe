@@ -133,7 +133,7 @@ export const apiHelperFunction = async <T>(
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMsg = error.response?.data?.message || error.message;
-      alert(errorMsg);
+      console.log(errorMsg);
       throw new Error(errorMsg);
     } else {
       throw new Error("An unknown error occurred");
