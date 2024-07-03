@@ -4,6 +4,7 @@ import {
   GroupDetailResponseType,
   GroupListResponseType,
   RenameGroupResponseType,
+  SearchUserResponseType,
 } from "../../lib/types/group.types";
 import { apiHelperFunction } from "../../utils/apiHelper";
 
@@ -169,6 +170,53 @@ class groupService {
     } catch (error) {
       console.log(error);
       throw new Error("Failed to remove user form group");
+    }
+  };
+  searchUserGroup = async ({
+    group_id,
+    email,
+    phone,
+  }: {
+    group_id: string;
+    email: string;
+    phone: string;
+  }): Promise<SearchUserResponseType> => {
+    try {
+      const response: SearchUserResponseType = await apiHelperFunction({
+        method: "POST",
+        url: `http://localhost:3000/api/v1/group/search/${group_id}`,
+        includeAuth: true,
+        data: {
+          email,
+          phone,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Failed to search user form group");
+    }
+  };
+  addUserToGroup = async ({
+    group_id,
+    user_id,
+  }: {
+    group_id: string;
+    user_id: number;
+  }): Promise<SearchUserResponseType> => {
+    try {
+      const response: SearchUserResponseType = await apiHelperFunction({
+        method: "PUT",
+        url: `http://localhost:3000/api/v1/group/add-user/${group_id}`,
+        includeAuth: true,
+        data: {
+          user_id,
+        },
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+      throw new Error("Failed to search user form group");
     }
   };
 }

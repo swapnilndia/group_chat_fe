@@ -1,7 +1,7 @@
 import { LoginInfoType, SignupInfoType } from "../../lib/types";
 import { apiHelperFunction } from "../../utils/apiHelper";
 type UserInfo = {
-  id: number;
+  user_id: number;
   name: string;
   email: string;
   phone: string;

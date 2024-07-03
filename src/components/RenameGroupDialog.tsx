@@ -8,32 +8,48 @@ import { TextField } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/appStore";
 import { renameGroupAction } from "../redux/actions/groupAsyncAction";
+import { renameGroupSchema } from "../lib/schema";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function RenameGroupDialog({
-  open,
-  setOpen,
+  openRenameDialog,
+  setOpenRenameDialog,
   groupId,
 }: {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  openRenameDialog: boolean;
+  setOpenRenameDialog: React.Dispatch<React.SetStateAction<boolean>>;
   groupId: number;
 }) {
   const dispatch: AppDispatch = useDispatch();
-  const [name, setName] = React.useState("");
   const handleClose = () => {
-    setName("");
-    setOpen(false);
+    reset();
+    setOpenRenameDialog(false);
   };
 
-  const renameGroupHandler = async () => {
-    dispatch(renameGroupAction({ group_id: groupId, newGroupName: name }));
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      newGroupName: "",
+    },
+    resolver: yupResolver(renameGroupSchema),
+  });
+
+  const renameGroupHandler = async (data: { newGroupName: string }) => {
+    dispatch(
+      renameGroupAction({ group_id: groupId, newGroupName: data.newGroupName })
+    );
     handleClose();
   };
 
   return (
     <React.Fragment>
       <Dialog
-        open={open}
+        open={openRenameDialog}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -41,30 +57,34 @@ export default function RenameGroupDialog({
         <DialogTitle id="alert-dialog-title">
           Please enter new Name of Group
         </DialogTitle>
-        <DialogContent>
-          <TextField
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-          ></TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={renameGroupHandler}
-            variant="contained"
-            color="inherit"
-          >
-            Update
-          </Button>
-          <Button
-            onClick={handleClose}
-            variant="contained"
-            color="error"
-            autoFocus
-          >
-            Cancel
-          </Button>
-        </DialogActions>
+        <form noValidate onSubmit={handleSubmit(renameGroupHandler)}>
+          <DialogContent>
+            <TextField
+              margin="normal"
+              autoFocus
+              required
+              label="New Group Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              {...register("newGroupName")}
+              helperText={errors.newGroupName?.message}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button type="submit" variant="contained" color="inherit">
+              Update
+            </Button>
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              color="error"
+              autoFocus
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   );

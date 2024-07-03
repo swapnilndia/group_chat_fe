@@ -1,26 +1,19 @@
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   IconButton,
   Tooltip,
   Typography,
 } from "@mui/material";
-import BlockIcon from "@mui/icons-material/Block";
-import PersonRemoveAlt1Icon from "@mui/icons-material/PersonRemoveAlt1";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteGroup,
   selectedGroupId,
   selectedGroupInfo,
 } from "../redux/reducers/groupSlice";
@@ -28,41 +21,30 @@ import { useEffect, useState } from "react";
 import {
   deleteGroupAction,
   getGroupInfoAction,
-  grantAdminRightsAction,
-  removeUserFromGroupAction,
-  revokeAdminRightsAction,
 } from "../redux/actions/groupAsyncAction";
 import { AppDispatch } from "../redux/appStore";
 import RenameGroupDialog from "./RenameGroupDialog";
+import AddUserToGroup from "./AddUserToGroup";
+import GroupUsersList from "./GroupUsersList";
+import CancelIcon from "@mui/icons-material/Cancel";
 
 const GroupDetailComponent = () => {
   const dispatch: AppDispatch = useDispatch();
   const selectedGroupDetail = useSelector(selectedGroupInfo);
   const selectGroupId = useSelector(selectedGroupId);
-  const [open, setOpen] = useState(false);
+  const [openRenameDialog, setOpenRenameDialog] = useState(false);
+  const [openSearchDialog, setOpenSearchDialog] = useState(false);
+  const [viewMessage, setViewMessage] = useState(true);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleRenameClickOpen = () => {
+    setOpenRenameDialog(true);
   };
-
-  // const renameGroupHandler = async () => {
-  //   console.log("rename group clicked");
-  // };
+  const handleSearchClickOpen = () => {
+    setOpenSearchDialog(true);
+  };
   const deleteGroupHandler = async (groupId: number) => {
-    dispatch(deleteGroupAction({ group_id: groupId.toString() }));
-  };
-  // const addNewUserHandler = async () => {
-  //   console.log("add new user clicked");
-  // };
-  const giveAdminRightHandler = async (groupId: string, userId: number) => {
-    dispatch(grantAdminRightsAction({ group_id: groupId, user_id: userId }));
-  };
-  const revokeAdminRightHandler = async (groupId: string, userId: number) => {
-    dispatch(revokeAdminRightsAction({ group_id: groupId, user_id: userId }));
-  };
-
-  const removeUserHandler = async (groupId: string, userId: number) => {
-    dispatch(removeUserFromGroupAction({ group_id: groupId, user_id: userId }));
+    await dispatch(deleteGroupAction({ group_id: groupId.toString() }));
+    dispatch(deleteGroup());
   };
 
   useEffect(() => {
@@ -73,118 +55,95 @@ const GroupDetailComponent = () => {
 
   return (
     <Card>
-      {selectGroupId && selectedGroupDetail && (
+      {selectGroupId && selectedGroupDetail ? (
         <CardContent>
           <Box
             display="flex"
             flexDirection="row"
             justifyContent="space-between"
-            padding="1rem"
-            border={1}
-            borderRadius={2}
           >
-            <Typography align="center" variant="h4">
+            <Typography align="center" variant="h4" fontFamily="fantasy">
               {selectedGroupDetail.group_name}
             </Typography>
-            <Box>
-              <Tooltip title="Add user to group">
-                <IconButton>
-                  <GroupAddIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Rename this group">
-                <IconButton onClick={handleClickOpen}>
-                  <EditIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Delete this group">
-                <IconButton onClick={() => deleteGroupHandler(selectGroupId)}>
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-            </Box>
+
+            {selectedGroupDetail.isUserGroupAdmin && (
+              <>
+                {" "}
+                {viewMessage ? (
+                  <Button
+                    variant="contained"
+                    color="info"
+                    onClick={() => setViewMessage(false)}
+                  >
+                    Edit Group
+                  </Button>
+                ) : (
+                  <Box>
+                    <Tooltip title="Add user to group">
+                      <IconButton onClick={handleSearchClickOpen}>
+                        <GroupAddIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Rename this group">
+                      <IconButton onClick={handleRenameClickOpen}>
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete this group">
+                      <IconButton
+                        onClick={() => deleteGroupHandler(selectGroupId)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Close Edit Group">
+                      <IconButton
+                        color="error"
+                        onClick={() => setViewMessage(true)}
+                      >
+                        <CancelIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                )}
+              </>
+            )}
           </Box>
 
-          <TableContainer component={Paper}>
-            <Typography align="center" variant="h6">
-              Group Members
-            </Typography>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead sx={{ bgcolor: "red" }}>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell align="right">Email</TableCell>
-                  <TableCell align="right">Phone</TableCell>
-                  <TableCell align="right">isAdmin</TableCell>
-                  <TableCell align="right">Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {selectedGroupDetail.Users.map((user) => (
-                  <TableRow
-                    key={user.user_id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {user.name}
-                    </TableCell>
-                    <TableCell align="right">{user.email}</TableCell>
-                    <TableCell align="right">{user.phone}</TableCell>
-                    <TableCell align="right">
-                      {user.GroupMember.is_admin ? "Yes" : "No"}
-                    </TableCell>
-                    <TableCell align="right">
-                      <Box>
-                        <Tooltip title="Revoke admin rights">
-                          <IconButton
-                            onClick={() =>
-                              revokeAdminRightHandler(
-                                selectGroupId.toString(),
-                                user.user_id
-                              )
-                            }
-                          >
-                            <BlockIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Grant admin rights">
-                          <IconButton
-                            onClick={() =>
-                              giveAdminRightHandler(
-                                selectGroupId.toString(),
-                                user.user_id
-                              )
-                            }
-                          >
-                            <AdminPanelSettingsIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Remove User from group">
-                          <IconButton
-                            onClick={() =>
-                              removeUserHandler(
-                                selectGroupId.toString(),
-                                user.user_id
-                              )
-                            }
-                          >
-                            <PersonRemoveAlt1Icon />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {viewMessage ? (
+            <h1>Message</h1>
+          ) : (
+            <GroupUsersList
+              selectedGroupDetail={selectedGroupDetail}
+              selectGroupId={selectGroupId}
+            />
+          )}
+
           {selectGroupId && (
             <RenameGroupDialog
               groupId={selectGroupId}
-              open={open}
-              setOpen={setOpen}
+              openRenameDialog={openRenameDialog}
+              setOpenRenameDialog={setOpenRenameDialog}
             ></RenameGroupDialog>
           )}
+          {selectGroupId && (
+            <AddUserToGroup
+              groupId={selectGroupId.toString()}
+              openSearchDialog={openSearchDialog}
+              setOpenSearchDialog={setOpenSearchDialog}
+            ></AddUserToGroup>
+          )}
+        </CardContent>
+      ) : (
+        <CardContent>
+          <Typography
+            padding="1rem"
+            variant="h1"
+            align="center"
+            fontFamily="cursive"
+          >
+            Kindly select any group to view message or check settings
+          </Typography>
         </CardContent>
       )}
     </Card>

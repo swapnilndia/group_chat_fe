@@ -25,7 +25,6 @@ export const logoutAction = createAsyncThunk("logoutAction", async () => {
 
 export const userInfoAction = createAsyncThunk("userInfoAction", async () => {
   const response = await UserService.userInfo();
-  console.log(response);
   if (response && response.userInfo) {
     return response.userInfo;
   }
