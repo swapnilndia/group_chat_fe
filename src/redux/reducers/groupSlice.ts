@@ -2,22 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   GroupDetailDataType,
   GroupListData,
+  SearchUserType,
 } from "../../lib/types/group.types";
 import {
   getGroupInfoAction,
   getListOfGroupsAction,
+  searchUserForGroupAction,
 } from "../actions/groupAsyncAction";
 
 type GroupInitialState = {
   listOfGroup: GroupListData | null;
   selectedGroupId: null | number;
   selectedGroupInfo: null | GroupDetailDataType;
+  searchedUser: null | SearchUserType;
 };
 
 const initialState: GroupInitialState = {
   listOfGroup: null,
   selectedGroupId: null,
   selectedGroupInfo: null,
+  searchedUser: null,
 };
 
 const groupSlice = createSlice({
@@ -27,6 +31,13 @@ const groupSlice = createSlice({
     selectGroup: (state, action) => {
       state.selectedGroupId = action.payload;
     },
+    emptySearchedUser: (state) => {
+      state.searchedUser = null;
+    },
+    deleteGroup: (state) => {
+      state.selectedGroupId = null;
+      state.selectedGroupInfo = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getListOfGroupsAction.fulfilled, (state, action) => {
@@ -34,6 +45,9 @@ const groupSlice = createSlice({
     });
     builder.addCase(getGroupInfoAction.fulfilled, (state, action) => {
       state.selectedGroupInfo = action.payload;
+    });
+    builder.addCase(searchUserForGroupAction.fulfilled, (state, action) => {
+      state.searchedUser = action.payload;
     });
   },
 });
@@ -44,5 +58,8 @@ export const selectedGroupId = (state: { group: GroupInitialState }) =>
   state.group.selectedGroupId;
 export const selectedGroupInfo = (state: { group: GroupInitialState }) =>
   state.group.selectedGroupInfo;
-export const { selectGroup } = groupSlice.actions;
+export const selectSearchUser = (state: { group: GroupInitialState }) =>
+  state.group.searchedUser;
+export const { selectGroup, emptySearchedUser, deleteGroup } =
+  groupSlice.actions;
 export default groupSlice.reducer;

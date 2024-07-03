@@ -8,7 +8,7 @@ import {
 type InitialStateType = {
   isLoggedIn: boolean;
   userData: {
-    id: number;
+    user_id: number;
     name: string;
     email: string;
     phone: string;

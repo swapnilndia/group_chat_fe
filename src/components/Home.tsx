@@ -1,10 +1,33 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUserInfo } from "../redux/reducers/userSlice";
+import { AppDispatch } from "../redux/appStore";
+import { userInfoAction } from "../redux/actions/userAsyncActions";
 import { Grid, Paper } from "@mui/material";
 import Contact from "./Contact";
-import { useState } from "react";
 import GroupDetailComponent from "./GroupDetailComponent";
 
+const defaultChat = {
+  chatType: "IND",
+};
+const chatType = JSON.parse(
+  localStorage.getItem("chatType") || JSON.stringify(defaultChat)
+);
+
 const Home = () => {
-  const [group, setGroup] = useState<string>("IND");
+  const [group, setGroup] = useState<string>(chatType);
+  const dispatch: AppDispatch = useDispatch();
+  const userInfo = useSelector(selectUserInfo);
+
+  useEffect(() => {
+    if (userInfo === null) {
+      dispatch(userInfoAction());
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("chatType", JSON.stringify(group));
+  }, [group]);
 
   return (
     <Paper>

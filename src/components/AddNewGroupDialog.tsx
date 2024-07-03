@@ -8,6 +8,9 @@ import { TextField } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../redux/appStore";
 import { createGroupAction } from "../redux/actions/groupAsyncAction";
+import { useForm } from "react-hook-form";
+import { createGroupSchema } from "../lib/schema";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 export default function AddNewGroupDialog({
   open,
@@ -17,15 +20,25 @@ export default function AddNewGroupDialog({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const dispatch: AppDispatch = useDispatch();
-  const [name, setName] = React.useState("");
   const handleClose = () => {
-    setName("");
+    reset();
     setOpen(false);
   };
 
-  const createGroupHandler = async () => {
-    setName("");
-    await dispatch(createGroupAction({ groupName: name }));
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    defaultValues: {
+      name: "",
+    },
+    resolver: yupResolver(createGroupSchema),
+  });
+
+  const createGroupHandler = async (data: { name: string }) => {
+    await dispatch(createGroupAction({ groupName: data.name }));
     handleClose();
   };
 
@@ -40,30 +53,34 @@ export default function AddNewGroupDialog({
         <DialogTitle id="alert-dialog-title">
           Please enter name of New Group
         </DialogTitle>
-        <DialogContent>
-          <TextField
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-          ></TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={createGroupHandler}
-            variant="contained"
-            color="inherit"
-          >
-            Create
-          </Button>
-          <Button
-            onClick={handleClose}
-            variant="contained"
-            color="error"
-            autoFocus
-          >
-            Cancel
-          </Button>
-        </DialogActions>
+        <form noValidate onSubmit={handleSubmit(createGroupHandler)}>
+          <DialogContent>
+            <TextField
+              margin="normal"
+              autoFocus
+              required
+              label="Group Name"
+              type="text"
+              fullWidth
+              variant="outlined"
+              {...register("name")}
+              helperText={errors.name?.message}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button type="submit" variant="contained" color="inherit">
+              Create
+            </Button>
+            <Button
+              onClick={handleClose}
+              variant="contained"
+              color="error"
+              autoFocus
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   );

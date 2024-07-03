@@ -37,7 +37,7 @@ const MessageList = () => {
       {chatLists && chatLists.length > 0 && userInfo && (
         <Grid container gap={2} padding={2} margin="auto">
           {chatLists.map((chatMessage) => {
-            if (chatMessage.userId !== userInfo.id) {
+            if (chatMessage.userId !== userInfo.user_id) {
               return (
                 <Grid key={chatMessage.id} item xs={12}>
                   <Box

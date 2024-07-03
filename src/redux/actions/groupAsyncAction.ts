@@ -6,6 +6,7 @@ import {
   GroupDetailResponseType,
   GroupListResponseType,
   RenameGroupResponseType,
+  SearchUserResponseType,
 } from "../../lib/types/group.types";
 
 export const createGroupAction = createAsyncThunk(
@@ -137,5 +138,54 @@ export const removeUserFromGroupAction = createAsyncThunk(
       return response.data;
     }
     throw new Error("Delete Group failed");
+  }
+);
+
+export const searchUserForGroupAction = createAsyncThunk(
+  "searchUserForGroupAction",
+  async (
+    {
+      group_id,
+      email,
+      phone,
+    }: {
+      group_id: string;
+      email: string;
+      phone: string;
+    },
+    thunkAPI
+  ) => {
+    const response: SearchUserResponseType = await GroupService.searchUserGroup(
+      { group_id, email, phone }
+    );
+    if (response) {
+      thunkAPI.dispatch(getGroupInfoAction({ group_id }));
+      return response.data;
+    }
+    throw new Error("Search User failed");
+  }
+);
+
+export const addUserToGroupAction = createAsyncThunk(
+  "addUserToGroupAction",
+  async (
+    {
+      group_id,
+      user_id,
+    }: {
+      group_id: string;
+      user_id: number;
+    },
+    thunkAPI
+  ) => {
+    const response: SearchUserResponseType = await GroupService.addUserToGroup({
+      group_id,
+      user_id,
+    });
+    if (response) {
+      thunkAPI.dispatch(getGroupInfoAction({ group_id }));
+      return response.data;
+    }
+    throw new Error("Failed to fetch user");
   }
 );

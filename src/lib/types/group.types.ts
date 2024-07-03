@@ -56,10 +56,26 @@ export type GroupDetailDataType = {
   updatedAt: string;
   deletedAt: string | null;
   Users: User[];
+  isUserGroupAdmin: boolean;
 };
 
 export type GroupDetailResponseType = {
   status: number;
   message: string;
   data: GroupDetailDataType;
+};
+
+export type SearchUserType = {
+  user_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: string; // Use Date if you want to handle it as a Date object
+  updatedAt: string; // Use Date if you want to handle it as a Date object
+};
+
+export type SearchUserResponseType = {
+  status: number;
+  message: string;
+  data: SearchUserType;
 };
