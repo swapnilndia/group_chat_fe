@@ -23,7 +23,9 @@ const ViewGroupList = ({ listOfGroup }: { listOfGroup: GroupListData }) => {
           padding={1}
           gap={1}
           onClick={() => handleSelectedGroup(listItem.group_id)}
-          bgcolor={selectGroupId === listItem.group_id ? "lightgreen" : "white"}
+          bgcolor={
+            selectGroupId === listItem.group_id ? "lightgreen" : "lightgrey"
+          }
         >
           <Avatar sx={{ bgcolor: deepPurple[500] }}>Sk</Avatar>
           <div>

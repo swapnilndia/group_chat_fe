@@ -173,18 +173,16 @@ class groupService {
     }
   };
   searchUserGroup = async ({
-    group_id,
     email,
     phone,
   }: {
-    group_id: string;
     email: string;
     phone: string;
   }): Promise<SearchUserResponseType> => {
     try {
       const response: SearchUserResponseType = await apiHelperFunction({
         method: "POST",
-        url: `http://localhost:3000/api/v1/group/search/${group_id}`,
+        url: `http://localhost:3000/api/v1/group/search`,
         includeAuth: true,
         data: {
           email,

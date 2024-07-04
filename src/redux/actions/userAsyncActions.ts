@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { LoginInfoType } from "../../lib/types";
 import { UserService } from "../services/userService";
+import { SearchUserResponseType } from "../../lib/types/group.types";
+import { GroupService } from "../services/groupService";
 
 export const loginAction = createAsyncThunk<string, LoginInfoType>(
   "loginAction",
@@ -30,3 +32,52 @@ export const userInfoAction = createAsyncThunk("userInfoAction", async () => {
   }
   throw new Error("User info retrieval failed");
 });
+export const userContactsAction = createAsyncThunk(
+  "userContactsAction",
+  async () => {
+    const response = await UserService.getContactList();
+    if (response) {
+      return response;
+    }
+    throw new Error("User info retrieval failed");
+  }
+);
+export const addUserToContactAction = createAsyncThunk(
+  "addUserToContactAction",
+  async ({ contact_user_id }: { contact_user_id: number }, thunkAPI) => {
+    const response = await UserService.addUserToContactList({
+      contact_user_id,
+    });
+    if (response) {
+      thunkAPI.dispatch(userContactsAction());
+      return response;
+    }
+    throw new Error("User info retrieval failed");
+  }
+);
+export const removeUserFromContactAction = createAsyncThunk(
+  "removeUserFromContactAction",
+  async ({ contact_user_id }: { contact_user_id: number }, thunkAPI) => {
+    const response = await UserService.removeUserFromContactList({
+      contact_user_id,
+    });
+    if (response) {
+      thunkAPI.dispatch(userContactsAction());
+      return response;
+    }
+    throw new Error("User info retrieval failed");
+  }
+);
+
+export const searchUserAction = createAsyncThunk(
+  "searchUserAction",
+  async ({ email, phone }: { email: string; phone: string }) => {
+    const response: SearchUserResponseType = await GroupService.searchUserGroup(
+      { email, phone }
+    );
+    if (response) {
+      return response.data;
+    }
+    throw new Error("Search User failed");
+  }
+);
