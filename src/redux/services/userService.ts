@@ -1,4 +1,9 @@
 import { LoginInfoType, SignupInfoType } from "../../lib/types";
+import {
+  AddContactResponseType,
+  ContactListResponseType,
+  RemoveContactResponseType,
+} from "../../lib/types/user.types";
 import { apiHelperFunction } from "../../utils/apiHelper";
 type UserInfo = {
   user_id: number;
@@ -89,6 +94,56 @@ class userService {
         method: "GET",
         url: "user/userinfo",
         includeAuth: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  getContactList = async () => {
+    try {
+      const response: ContactListResponseType = await apiHelperFunction({
+        method: "GET",
+        url: "/contact/contact-list",
+        includeAuth: true,
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  addUserToContactList = async ({
+    contact_user_id,
+  }: {
+    contact_user_id: number;
+  }) => {
+    try {
+      const response: AddContactResponseType = await apiHelperFunction({
+        method: "POST",
+        url: "/contact/add-contact",
+        includeAuth: true,
+        data: {
+          contact_user_id: contact_user_id,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  removeUserFromContactList = async ({
+    contact_user_id,
+  }: {
+    contact_user_id: number;
+  }) => {
+    try {
+      const response: RemoveContactResponseType = await apiHelperFunction({
+        method: "DELETE",
+        url: "/contact/remove-contact",
+        includeAuth: true,
+        data: {
+          contact_user_id: contact_user_id,
+        },
       });
       return response.data;
     } catch (error) {

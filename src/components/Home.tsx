@@ -6,6 +6,8 @@ import { userInfoAction } from "../redux/actions/userAsyncActions";
 import { Grid, Paper } from "@mui/material";
 import Contact from "./Contact";
 import GroupDetailComponent from "./GroupDetailComponent";
+import IndividualComponent from "./IndividualComponent";
+import IndividualDetailComponent from "./IndividualDetailComponent";
 
 const defaultChat = {
   chatType: "IND",
@@ -39,7 +41,7 @@ const Home = () => {
           {group === "GRP" ? (
             <GroupDetailComponent />
           ) : (
-            <h1>Individual component</h1>
+            <IndividualDetailComponent />
           )}
         </Grid>
       </Grid>

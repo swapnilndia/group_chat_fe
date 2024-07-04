@@ -156,7 +156,7 @@ export const searchUserForGroupAction = createAsyncThunk(
     thunkAPI
   ) => {
     const response: SearchUserResponseType = await GroupService.searchUserGroup(
-      { group_id, email, phone }
+      { email, phone }
     );
     if (response) {
       thunkAPI.dispatch(getGroupInfoAction({ group_id }));
