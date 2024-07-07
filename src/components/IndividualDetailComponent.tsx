@@ -11,13 +11,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../redux/appStore";
 import {
   deleteSelectedContactId,
-  selectUserContactId,
+  selectUserContactInfo,
 } from "../redux/reducers/userSlice";
 import { removeUserFromContactAction } from "../redux/actions/userAsyncActions";
+import IndividualMessageList from "./IndividualMessageList";
 
 const IndividualDetailComponent = () => {
   const dispatch: AppDispatch = useDispatch();
-  const selectedContactId = useSelector(selectUserContactId);
+  const selectedContactInfo = useSelector(selectUserContactInfo);
 
   const deleteContactHandler = async (contactId: number) => {
     await dispatch(removeUserFromContactAction({ contact_user_id: contactId }));
@@ -26,7 +27,7 @@ const IndividualDetailComponent = () => {
 
   return (
     <Card>
-      {selectedContactId ? (
+      {selectedContactInfo ? (
         <CardContent>
           <Box
             display="flex"
@@ -34,13 +35,15 @@ const IndividualDetailComponent = () => {
             justifyContent="space-between"
           >
             <Typography align="center" variant="h4" fontFamily="fantasy">
-              wehowoghw
+              {selectedContactInfo.name}
             </Typography>
 
             <Box>
               <Tooltip title="Delete this group">
                 <IconButton
-                  onClick={() => deleteContactHandler(selectedContactId)}
+                  onClick={() =>
+                    deleteContactHandler(selectedContactInfo.user_id)
+                  }
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -48,13 +51,13 @@ const IndividualDetailComponent = () => {
             </Box>
           </Box>
 
-          <h1>Message</h1>
+          <IndividualMessageList />
         </CardContent>
       ) : (
         <CardContent>
           <Typography
             padding="1rem"
-            variant="h1"
+            variant="h3"
             align="center"
             fontFamily="cursive"
           >

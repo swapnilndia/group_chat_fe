@@ -46,3 +46,10 @@ export const addUserToGroupSchema = yup.object().shape({
     otherwise: (schema) => schema.optional(),
   }),
 });
+
+export const sendMessageSchema = yup.object().shape({
+  text: yup
+    .string()
+    .required("Group name is required")
+    .min(1, "Group name must be at least 1 characters long"),
+});

@@ -27,6 +27,7 @@ import RenameGroupDialog from "./RenameGroupDialog";
 import AddUserToGroup from "./AddUserToGroup";
 import GroupUsersList from "./GroupUsersList";
 import CancelIcon from "@mui/icons-material/Cancel";
+import GroupMessageList from "./GroupMessageList";
 
 const GroupDetailComponent = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -111,7 +112,7 @@ const GroupDetailComponent = () => {
           </Box>
 
           {viewMessage ? (
-            <h1>Message</h1>
+            <GroupMessageList />
           ) : (
             <GroupUsersList
               selectedGroupDetail={selectedGroupDetail}

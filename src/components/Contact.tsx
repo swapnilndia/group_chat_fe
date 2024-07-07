@@ -16,13 +16,13 @@ const Contact = ({
           label="Individual"
           onClick={() => setGroup("IND")}
           clickable
-          color={group === "IND" ? "success" : "info"}
+          style={{ backgroundColor: group === "IND" ? "#25D366" : "inherit" }}
         />
         <Chip
           label="Group"
           onClick={() => setGroup("GRP")}
           clickable
-          color={group === "GRP" ? "success" : "info"}
+          style={{ backgroundColor: group === "GRP" ? "#25D366" : "inherit" }}
         />
       </Box>
       <Box>
