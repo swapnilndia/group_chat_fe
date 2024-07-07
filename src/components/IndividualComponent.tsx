@@ -58,10 +58,9 @@ const IndividualComponent = () => {
               borderBottom="1px solid black"
               onClick={() => handleSelectedUser(contact.user_id)}
               bgcolor={
-                selectedContactId === contact.user_id
-                  ? "lightgreen"
-                  : "lightgrey"
+                selectedContactId === contact.user_id ? "#25D366" : "lightgrey"
               }
+              color={selectedContactId === contact.user_id ? "white" : "black"}
             >
               <Avatar sx={{ bgcolor: deepPurple[500] }}>Sk</Avatar>
               <div>

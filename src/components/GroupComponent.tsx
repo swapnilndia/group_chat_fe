@@ -31,6 +31,7 @@ const GroupComponent = () => {
           justifyContent="center"
           padding={1}
           gap={1}
+          borderBottom="1px solid black"
         >
           <Button variant="contained" onClick={handleClickOpen}>
             Add new Group

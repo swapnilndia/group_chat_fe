@@ -3,6 +3,11 @@ export type Contact = {
   name: string;
   email: string;
   phone: string;
+  Contact: {
+    contact_id: number;
+    connectionKey: string;
+    status: string;
+  };
 };
 
 export type UserContactListType = {

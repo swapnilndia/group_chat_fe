@@ -7,6 +7,7 @@ import {
   userInfoAction,
 } from "../actions/userAsyncActions";
 import {
+  Contact,
   SearchedUserDataType,
   UserContactListType,
 } from "../../lib/types/user.types";
@@ -24,6 +25,7 @@ type InitialStateType = {
   userContactList: null | UserContactListType;
   searchedUser: null | SearchedUserDataType;
   selectedContactId: null | number;
+  selectedContactInfo: null | Contact;
 };
 
 type AccessTokenType = string | null;
@@ -39,6 +41,7 @@ const initialState: InitialStateType = {
   userContactList: null,
   searchedUser: null,
   selectedContactId: null,
+  selectedContactInfo: null,
 };
 
 const userSlice = createSlice({
@@ -47,9 +50,16 @@ const userSlice = createSlice({
   reducers: {
     selecteUserId: (state, action) => {
       state.selectedContactId = action.payload;
+      if (state.userContactList) {
+        const contactObj = state.userContactList.Contacts.filter(
+          (contact) => contact.user_id === action.payload
+        );
+        state.selectedContactInfo = contactObj[0];
+      }
     },
     deleteSelectedContactId: (state) => {
       state.selectedContactId = null;
+      state.selectedContactInfo = null;
     },
     deleteSearchedContact: (state) => {
       state.searchedUser = null;
@@ -57,7 +67,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(loginAction.fulfilled, (state, action) => {
-      console.log(action.payload);
       localStorage.setItem("token", JSON.stringify(action.payload));
       state.isLoggedIn = true;
     });
@@ -68,15 +77,12 @@ const userSlice = createSlice({
       window.location.href = "/login";
     });
     builder.addCase(userInfoAction.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.userData = action.payload;
     });
     builder.addCase(userContactsAction.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.userContactList = action.payload;
     });
     builder.addCase(searchUserAction.fulfilled, (state, action) => {
-      console.log(action.payload);
       state.searchedUser = action.payload;
     });
   },
@@ -91,7 +97,8 @@ export const selectSearchedContact = (state: { user: InitialStateType }) =>
   state.user.searchedUser;
 export const selectUserContactId = (state: { user: InitialStateType }) =>
   state.user.selectedContactId;
-
+export const selectUserContactInfo = (state: { user: InitialStateType }) =>
+  state.user.selectedContactInfo;
 export const { selecteUserId, deleteSelectedContactId, deleteSearchedContact } =
   userSlice.actions;
 export default userSlice.reducer;

@@ -29,7 +29,6 @@ export default function AddNewContactDialog({
 }) {
   const dispatch: AppDispatch = useDispatch();
   const searchedContact = useSelector(selectSearchedContact);
-  console.log(searchedContact);
   const handleClose = () => {
     reset();
     setOpen(false);
