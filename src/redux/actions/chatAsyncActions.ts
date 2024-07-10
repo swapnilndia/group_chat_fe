@@ -1,9 +1,19 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ChatService } from "../services/chatService";
 
+type MediumType = {
+  media_id: number;
+  file_name: string;
+  file_type: string;
+  file_size: number;
+  uploaded_by: number;
+  file_key: string;
+};
+
 type MessageType = {
   message_id: number;
   sender_id: number;
+  sender_name: string;
   receiver_id: number | null;
   group_id: number | null;
   message_type: "TEXT" | "IMAGE" | "VIDEO";
@@ -12,6 +22,7 @@ type MessageType = {
   status: string;
   createdAt: string;
   updatedAt: string;
+  Medium: MediumType | null;
 };
 
 type SendPersonalMessageType = {
