@@ -12,16 +12,18 @@ import {
   UserContactListType,
 } from "../../lib/types/user.types";
 
+export type LoggedInUser = {
+  user_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type InitialStateType = {
   isLoggedIn: boolean;
-  userData: {
-    user_id: number;
-    name: string;
-    email: string;
-    phone: string;
-    createdAt: string;
-    updatedAt: string;
-  } | null;
+  userData: LoggedInUser | null;
   userContactList: null | UserContactListType;
   searchedUser: null | SearchedUserDataType;
   selectedContactId: null | number;

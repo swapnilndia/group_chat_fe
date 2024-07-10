@@ -51,6 +51,7 @@ export type User = {
 export type GroupDetailDataType = {
   group_id: number;
   group_name: string;
+  connectionKey: string;
   created_by: number;
   createdAt: string;
   updatedAt: string;
