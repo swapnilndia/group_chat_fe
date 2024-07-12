@@ -12,10 +12,10 @@ export default function ViewMediaMessage({
   viewURL: string;
 }) {
   const handleClose = () => {
-    setOpen(false);
     setViewURL("");
+    setOpen(false);
   };
-  console.log(setViewURL);
+
   return (
     <Dialog
       open={open}

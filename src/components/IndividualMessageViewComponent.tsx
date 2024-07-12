@@ -7,8 +7,10 @@ import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useState } from "react";
 import ViewMediaMessage from "./ViewMediaMessage";
-interface PresignedUrlResponse {
-  url: string;
+interface PresignedUrlResponse_GET {
+  data: string;
+  message: string;
+  status: number;
 }
 const Base_url = import.meta.env.VITE_BASE_URL;
 const IndividualMessageViewComponent = ({
@@ -21,12 +23,15 @@ const IndividualMessageViewComponent = ({
   const [open, setOpen] = useState(false);
   const [viewURL, setViewURL] = useState("");
 
-  const fetchPresignedUrl_GET = async (key: string): Promise<string> => {
+  const fetchPresignedUrl_GET = async (
+    key: string
+  ): Promise<PresignedUrlResponse_GET> => {
     try {
-      const response = await axios.post<PresignedUrlResponse>(
+      const response = await axios.post<PresignedUrlResponse_GET>(
         `${Base_url}/messages/download-url`,
         { key }
       );
+      console.log(response);
       return response.data;
     } catch (error) {
       console.error("Error fetching presigned URL:", error);
@@ -49,7 +54,7 @@ const IndividualMessageViewComponent = ({
     try {
       const url = await fetchPresignedUrl_GET(fileKey);
       if (url) {
-        downloadFile(url, fileName);
+        downloadFile(url.data, fileName);
       }
     } catch (error) {
       console.error("Error:", error);

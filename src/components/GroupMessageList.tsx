@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, IconButton, TextField } from "@mui/material";
+import { Box, IconButton, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../redux/appStore";
@@ -82,45 +82,61 @@ const GroupMessageList = () => {
 
   return (
     <>
-      {messagesList.length > 0 && selectedGroup && loggedinUserInfo && (
-        <GroupMessageViewComponent
-          messagesList={messagesList}
-          loggedinUserInfo={loggedinUserInfo}
-        />
-      )}
-      <Grid item xs={12}>
-        <IconButton size="large" type="submit" onClick={() => setOpen(true)}>
-          <AttachFileIcon />
-        </IconButton>
-        <form
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "1rem",
-            color: "#25D366",
-            alignItems: "center",
-          }}
-          noValidate
-          onSubmit={handleSubmit(sendMessageHandler)}
+      <Box display="flex" flexDirection="column" height="80vh">
+        <Box
+          flexGrow={1}
+          overflow="auto"
+          display="flex"
+          flexDirection="column-reverse"
         >
-          <TextField
-            margin="normal"
-            autoFocus
-            label="Message"
-            type="text"
-            fullWidth
-            variant="outlined"
-            {...register("text")}
-            helperText={errors.text?.message}
-            size="medium"
-          />
+          {messagesList.length > 0 && selectedGroup && loggedinUserInfo && (
+            <GroupMessageViewComponent
+              messagesList={messagesList}
+              loggedinUserInfo={loggedinUserInfo}
+            />
+          )}
+        </Box>
 
-          <IconButton type="submit">
-            Send <SendIcon />
+        <Box
+          display="flex"
+          alignItems="center"
+          padding="1rem"
+          borderTop="1px solid #ccc"
+        >
+          {" "}
+          <IconButton size="large" type="submit" onClick={() => setOpen(true)}>
+            <AttachFileIcon />
           </IconButton>
-        </form>
-      </Grid>
+          <form
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "1rem",
+              color: "#25D366",
+              alignItems: "center",
+            }}
+            noValidate
+            onSubmit={handleSubmit(sendMessageHandler)}
+          >
+            <TextField
+              margin="normal"
+              autoFocus
+              label="Message"
+              type="text"
+              fullWidth
+              variant="outlined"
+              {...register("text")}
+              helperText={errors.text?.message}
+              size="medium"
+            />
+
+            <IconButton type="submit">
+              Send <SendIcon />
+            </IconButton>
+          </form>
+        </Box>
+      </Box>
       {loggedinUserInfo && selectedGroup && (
         <AddAttachmentDialog_Group
           sender_id={loggedinUserInfo?.user_id}
