@@ -9,7 +9,7 @@ import {
 import * as React from "react";
 import { useState, ChangeEvent } from "react";
 import { Socket } from "socket.io-client";
-
+const Base_url = import.meta.env.VITE_BASE_URL;
 export default function AddAttachmentDialog_Group({
   open,
   setOpen,
@@ -45,16 +45,13 @@ export default function AddAttachmentDialog_Group({
     key: string
   ): Promise<string | null> => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/v1/messages/upload-url",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ filename, contentType, key }),
-        }
-      );
+      const response = await fetch(`${Base_url}/messages/upload-url`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filename, contentType, key }),
+      });
       if (!response.ok) {
         throw new Error("Failed to get signed URL");
       }

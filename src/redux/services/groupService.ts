@@ -7,7 +7,7 @@ import {
   SearchUserResponseType,
 } from "../../lib/types/group.types";
 import { apiHelperFunction } from "../../utils/apiHelper";
-
+const Base_url = import.meta.env.VITE_BASE_URL;
 class groupService {
   static getInstance() {
     return new groupService();
@@ -21,7 +21,7 @@ class groupService {
     try {
       const response: CreateGroupResponseType = await apiHelperFunction({
         method: "POST",
-        url: "http://localhost:3000/api/v1/group/create",
+        url: `${Base_url}/group/create`,
         data: { groupName },
         includeAuth: true,
       });
@@ -36,7 +36,7 @@ class groupService {
     try {
       const response: GroupListResponseType = await apiHelperFunction({
         method: "GET",
-        url: "http://localhost:3000/api/v1/group/grouplist",
+        url: `${Base_url}/group/grouplist`,
         includeAuth: true,
       });
 
@@ -57,7 +57,7 @@ class groupService {
     try {
       const response: RenameGroupResponseType = await apiHelperFunction({
         method: "PUT",
-        url: `http://localhost:3000/api/v1/group/change-name/${group_id}`,
+        url: `${Base_url}/group/change-name/${group_id}`,
         data: {
           newGroupName,
         },
@@ -79,7 +79,7 @@ class groupService {
     try {
       const response: DeleteGroupResponseType = await apiHelperFunction({
         method: "DELETE",
-        url: `http://localhost:3000/api/v1/group/delete/${group_id}`,
+        url: `${Base_url}/group/delete/${group_id}`,
         includeAuth: true,
       });
       return response;
@@ -97,7 +97,7 @@ class groupService {
     try {
       const response: GroupDetailResponseType = await apiHelperFunction({
         method: "GET",
-        url: `http://localhost:3000/api/v1/group/info/${group_id}`,
+        url: `${Base_url}/group/info/${group_id}`,
         includeAuth: true,
       });
       return response;
@@ -116,7 +116,7 @@ class groupService {
     try {
       const response: GroupDetailResponseType = await apiHelperFunction({
         method: "PUT",
-        url: `http://localhost:3000/api/v1/group/remove-admin/${group_id}`,
+        url: `${Base_url}/group/remove-admin/${group_id}`,
         includeAuth: true,
         data: {
           user_id,
@@ -138,7 +138,7 @@ class groupService {
     try {
       const response: GroupDetailResponseType = await apiHelperFunction({
         method: "PUT",
-        url: `http://localhost:3000/api/v1/group/make-admin/${group_id}`,
+        url: `${Base_url}/group/make-admin/${group_id}`,
         includeAuth: true,
         data: {
           user_id,
@@ -160,7 +160,7 @@ class groupService {
     try {
       const response: GroupDetailResponseType = await apiHelperFunction({
         method: "PUT",
-        url: `http://localhost:3000/api/v1/group/remove-user/${group_id}`,
+        url: `${Base_url}/group/remove-user/${group_id}`,
         includeAuth: true,
         data: {
           user_id,
@@ -182,7 +182,7 @@ class groupService {
     try {
       const response: SearchUserResponseType = await apiHelperFunction({
         method: "POST",
-        url: `http://localhost:3000/api/v1/group/search`,
+        url: `${Base_url}/group/search`,
         includeAuth: true,
         data: {
           email,
@@ -205,7 +205,7 @@ class groupService {
     try {
       const response: SearchUserResponseType = await apiHelperFunction({
         method: "PUT",
-        url: `http://localhost:3000/api/v1/group/add-user/${group_id}`,
+        url: `${Base_url}/group/add-user/${group_id}`,
         includeAuth: true,
         data: {
           user_id,

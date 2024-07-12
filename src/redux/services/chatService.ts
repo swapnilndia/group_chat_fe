@@ -5,7 +5,7 @@ import {
   SendPersonalMessageType,
 } from "../../lib/types/message.types";
 import { apiHelperFunction } from "../../utils/apiHelper";
-
+const Base_url = import.meta.env.VITE_BASE_URL;
 class chatService {
   static getInstance() {
     return new chatService();
@@ -18,7 +18,7 @@ class chatService {
     try {
       const response: SendMessageResponse = await apiHelperFunction({
         method: "POST",
-        url: "http://localhost:3000/api/v1/messages/personal",
+        url: `${Base_url}/messages/personal`,
         data: { receiver_id, content },
         includeAuth: true,
       });
@@ -36,7 +36,7 @@ class chatService {
     try {
       const response: SendMessageResponse = await apiHelperFunction({
         method: "POST",
-        url: "http://localhost:3000/api/v1/messages/group",
+        url: `${Base_url}/messages/group`,
         data: { group_id, content },
         includeAuth: true,
       });
@@ -51,7 +51,7 @@ class chatService {
     try {
       const response: GetMessageHistoryResponse = await apiHelperFunction({
         method: "GET",
-        url: `http://localhost:3000/api/v1/messages/personal/history/${contactId}`,
+        url: `${Base_url}/messages/personal/history/${contactId}`,
         data: {},
         includeAuth: true,
       });
@@ -66,7 +66,7 @@ class chatService {
     try {
       const response: GetMessageHistoryResponse = await apiHelperFunction({
         method: "GET",
-        url: `http://localhost:3000/api/v1/messages/group/history/${groupId}`,
+        url: `${Base_url}/messages/group/history/${groupId}`,
         data: {},
         includeAuth: true,
       });

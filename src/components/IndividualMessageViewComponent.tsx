@@ -10,7 +10,7 @@ import ViewMediaMessage from "./ViewMediaMessage";
 interface PresignedUrlResponse {
   url: string;
 }
-
+const Base_url = import.meta.env.VITE_BASE_URL;
 const IndividualMessageViewComponent = ({
   messagesList,
   selectedContact,
@@ -24,7 +24,7 @@ const IndividualMessageViewComponent = ({
   const fetchPresignedUrl_GET = async (key: string): Promise<string> => {
     try {
       const response = await axios.post<PresignedUrlResponse>(
-        "http://localhost:3000/api/v1/messages/download-url",
+        `${Base_url}/messages/download-url`,
         { key }
       );
       return response.data;

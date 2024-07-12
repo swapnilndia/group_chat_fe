@@ -17,14 +17,14 @@ type ChatlistResponseType = {
   message: string;
   data: ChatlistType;
 };
-
+const Base_url = import.meta.env.VITE_BASE_URL;
 const useFetchChats = () => {
   const [chat, setChat] = useState<ChatlistType>(null);
 
   const fetchChat = async () => {
     const response: ChatlistResponseType = await apiHelperFunction({
       method: "GET",
-      url: "http://localhost:3000/api/v1/chat/get-chatlist",
+      url: `${Base_url}/chat/get-chatlist`,
       includeAuth: true,
     });
     console.log(response);

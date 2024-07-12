@@ -6,7 +6,7 @@ import { LoggedInUser } from "../lib/types/user.types";
 interface PresignedUrlResponse {
   url: string;
 }
-
+const Base_url = import.meta.env.VITE_BASE_URL;
 const GroupMessageViewComponent = ({
   messagesList,
   loggedinUserInfo,
@@ -17,7 +17,7 @@ const GroupMessageViewComponent = ({
   const fetchPresignedUrl = async (key: string): Promise<string> => {
     try {
       const response = await axios.post<PresignedUrlResponse>(
-        "http://localhost:3000/api/v1/messages/download-url",
+        `${Base_url}/messages/download-url`,
         { key }
       );
       return response.data;

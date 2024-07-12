@@ -7,9 +7,10 @@ interface ApiHelperOptions {
   data?: unknown;
   includeAuth?: boolean; // New flag to indicate whether to include the auth token
 }
-
+const Base_url = import.meta.env.VITE_BASE_URL;
+console.log(Base_url);
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/v1/", // Replace with your API base URL
+  baseURL: import.meta.env.VITE_BASE_URL, // Replace with your API base URL
   headers: {
     "Content-Type": "application/json",
   },
@@ -29,12 +30,9 @@ const addRefreshSubscriber = (callback: (token: string) => void) => {
 
 const refreshToken = async (): Promise<string> => {
   try {
-    const response = await axios.get(
-      "http://localhost:3000/api/v1/user/refresh",
-      {
-        withCredentials: true,
-      }
-    );
+    const response = await axios.get(`${Base_url}/user/refresh`, {
+      withCredentials: true,
+    });
     console.log(response);
     const { accessToken } = response.data.data;
     localStorage.setItem("token", JSON.stringify(accessToken));
