@@ -10,8 +10,8 @@ import {
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { signupSchema } from "../lib/schema";
-import { SignupInfoType } from "../lib/types";
 import { UserService } from "../redux/services/userService";
+import { SignupInfoType } from "../lib/types/user.types";
 
 const SignupPage = () => {
   const navigate = useNavigate();

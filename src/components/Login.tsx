@@ -11,9 +11,9 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginSchema } from "../lib/schema";
-import { LoginInfoType } from "../lib/types";
 import { loginAction } from "../redux/actions/userAsyncActions";
 import { AppDispatch } from "../redux/appStore";
+import { LoginInfoType } from "../lib/types/user.types";
 
 const LoginPage = () => {
   const dispatch: AppDispatch = useDispatch();

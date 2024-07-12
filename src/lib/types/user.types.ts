@@ -53,3 +53,21 @@ export type SearchedUserResponseType = {
   message: string;
   data: SearchedUserDataType;
 };
+export type LoggedInUser = {
+  user_id: number;
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+  updatedAt: string;
+};
+export type SignupInfoType = {
+  name: string;
+  email: string;
+  phone: string;
+  password: string;
+};
+export type LoginInfoType = {
+  email: string;
+  password: string;
+};

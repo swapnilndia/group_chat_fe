@@ -1,8 +1,8 @@
 import { Box, Button, Grid, Typography } from "@mui/material";
-import { MessageType } from "../redux/reducers/chatSlice";
-import { LoggedInUser } from "../redux/reducers/userSlice";
 import { formatDate } from "../utils/helperFunctions";
 import axios from "axios";
+import { MessageType } from "../lib/types/message.types";
+import { LoggedInUser } from "../lib/types/user.types";
 interface PresignedUrlResponse {
   url: string;
 }

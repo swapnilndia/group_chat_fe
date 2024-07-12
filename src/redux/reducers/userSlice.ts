@@ -8,18 +8,10 @@ import {
 } from "../actions/userAsyncActions";
 import {
   Contact,
+  LoggedInUser,
   SearchedUserDataType,
   UserContactListType,
 } from "../../lib/types/user.types";
-
-export type LoggedInUser = {
-  user_id: number;
-  name: string;
-  email: string;
-  phone: string;
-  createdAt: string;
-  updatedAt: string;
-};
 
 type InitialStateType = {
   isLoggedIn: boolean;

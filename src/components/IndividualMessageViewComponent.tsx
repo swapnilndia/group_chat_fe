@@ -1,8 +1,12 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { Contact } from "../lib/types/user.types";
-import { MessageType } from "../redux/reducers/chatSlice";
 import { formatDate } from "../utils/helperFunctions";
 import axios from "axios";
+import { MessageType } from "../lib/types/message.types";
+import DownloadIcon from "@mui/icons-material/Download";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { useState } from "react";
+import ViewMediaMessage from "./ViewMediaMessage";
 interface PresignedUrlResponse {
   url: string;
 }
@@ -14,7 +18,10 @@ const IndividualMessageViewComponent = ({
   messagesList: MessageType[];
   selectedContact: Contact;
 }) => {
-  const fetchPresignedUrl = async (key: string): Promise<string> => {
+  const [open, setOpen] = useState(false);
+  const [viewURL, setViewURL] = useState("");
+
+  const fetchPresignedUrl_GET = async (key: string): Promise<string> => {
     try {
       const response = await axios.post<PresignedUrlResponse>(
         "http://localhost:3000/api/v1/messages/download-url",
@@ -26,6 +33,7 @@ const IndividualMessageViewComponent = ({
       throw new Error("Could not fetch presigned URL");
     }
   };
+
   const downloadFile = (url: string, fileName: string) => {
     const anchor = document.createElement("a");
     anchor.href = url;
@@ -34,12 +42,26 @@ const IndividualMessageViewComponent = ({
     anchor.click();
     document.body.removeChild(anchor);
   };
-  const handleFetchPresignedUrl = async (fileKey: string, fileName: string) => {
+  const handleFetchPresignedUrl_Download = async (
+    fileKey: string,
+    fileName: string
+  ) => {
     try {
-      const url = await fetchPresignedUrl(fileKey);
-      console.log(url);
+      const url = await fetchPresignedUrl_GET(fileKey);
       if (url) {
         downloadFile(url, fileName);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+  const handleFetchPresignedUrl_View = async (fileKey: string) => {
+    try {
+      const url = await fetchPresignedUrl_GET(fileKey);
+      console.log(url);
+      if (url) {
+        setOpen(true);
+        setViewURL(url.data);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -91,22 +113,46 @@ const IndividualMessageViewComponent = ({
                   </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="body1" align="left">
-                      <Button
-                        onClick={() =>
-                          handleFetchPresignedUrl(
-                            chatMessage.Medium?.file_key || "",
-                            chatMessage.Medium?.file_name || "abc"
-                          )
-                        }
-                      >
-                        {chatMessage.Medium?.file_name}
-                      </Button>
+                      {chatMessage.Medium?.file_name}
                     </Typography>
                     <Typography variant="body1" align="left">
                       {`${Math.ceil(
                         (chatMessage.Medium?.file_size || 0) / 1000
                       )} Bytes `}
                     </Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Typography variant="body1" align="left">
+                      {chatMessage.sender_name}
+                    </Typography>
+                    <Typography variant="body1" align="left">
+                      {formatDate(chatMessage.createdAt)}
+                    </Typography>
+                  </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Tooltip title="View Media">
+                      <IconButton
+                        onClick={() =>
+                          handleFetchPresignedUrl_View(
+                            chatMessage.Medium?.file_key || ""
+                          )
+                        }
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Download Media">
+                      <IconButton
+                        onClick={() =>
+                          handleFetchPresignedUrl_Download(
+                            chatMessage.Medium?.file_key || "",
+                            chatMessage.Medium?.file_name || "abc"
+                          )
+                        }
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Box>
                 </Box>
               )}
@@ -160,16 +206,7 @@ const IndividualMessageViewComponent = ({
                   </Box>
                   <Box display="flex" justifyContent="space-between">
                     <Typography variant="body1" align="left">
-                      <Button
-                        onClick={() =>
-                          handleFetchPresignedUrl(
-                            chatMessage.Medium?.file_key || "",
-                            chatMessage.Medium?.file_name || "abc"
-                          )
-                        }
-                      >
-                        {chatMessage.Medium?.file_name}
-                      </Button>
+                      {chatMessage.Medium?.file_name}
                     </Typography>
                     <Typography variant="body1" align="left">
                       {`${Math.ceil(
@@ -177,12 +214,45 @@ const IndividualMessageViewComponent = ({
                       )} Kb `}
                     </Typography>
                   </Box>
+                  <Box display="flex" justifyContent="space-between">
+                    <Tooltip title="View Media">
+                      <IconButton
+                        onClick={() =>
+                          handleFetchPresignedUrl_View(
+                            chatMessage.Medium?.file_key || ""
+                          )
+                        }
+                      >
+                        <VisibilityIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Download Media">
+                      <IconButton
+                        onClick={() =>
+                          handleFetchPresignedUrl_Download(
+                            chatMessage.Medium?.file_key || "",
+                            chatMessage.Medium?.file_name || "abc"
+                          )
+                        }
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
                 </Box>
               )}
             </Grid>
           );
         }
       })}
+      {open && (
+        <ViewMediaMessage
+          open={open}
+          setOpen={setOpen}
+          viewURL={viewURL}
+          setViewURL={setViewURL}
+        />
+      )}
     </Grid>
   );
 };

@@ -1,8 +1,9 @@
-import { LoginInfoType, SignupInfoType } from "../../lib/types";
 import {
   AddContactResponseType,
   ContactListResponseType,
+  LoginInfoType,
   RemoveContactResponseType,
+  SignupInfoType,
 } from "../../lib/types/user.types";
 import { apiHelperFunction } from "../../utils/apiHelper";
 type UserInfo = {
