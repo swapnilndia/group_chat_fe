@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Grid, IconButton, TextField } from "@mui/material";
+import { Grid, IconButton, TextField, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -15,19 +15,18 @@ import {
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { sendMessageSchema } from "../lib/schema";
-import io from "socket.io-client";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import AddAttachmentDialog from "./AddAttachmentDialog";
 import IndividualMessageViewComponent from "./IndividualMessageViewComponent";
-const socket = io("http://localhost:3000");
+import socket from "../lib/socket";
+import { MessageType } from "../lib/types/message.types";
 
 const IndividualMessageList = () => {
   const selectedContact = useSelector(selectUserContactInfo);
   const [open, setOpen] = useState(false);
-  console.log(selectedContact);
   const userInfo = useSelector(selectUserInfo);
-  console.log(userInfo);
   const messagesList = useSelector(selectPersonalMessages);
+  console.log(messagesList);
   const dispatch: AppDispatch = useDispatch();
 
   const {
@@ -41,6 +40,7 @@ const IndividualMessageList = () => {
     },
     resolver: yupResolver(sendMessageSchema),
   });
+
   useEffect(() => {
     if (selectedContact !== null) {
       dispatch(
@@ -49,22 +49,24 @@ const IndividualMessageList = () => {
     }
 
     const roomId = selectedContact?.Contact.connectionKey;
-    socket.emit("join", roomId);
-    // Define the message handler
-    const messageHandler = (message) => {
-      console.log(message);
+    if (roomId) {
+      console.log("room joined", roomId);
+      socket.emit("join", roomId);
+    }
+
+    const messageHandler = (message: MessageType) => {
       dispatch(receivePersonalMessage(message));
     };
 
     if (roomId) {
-      // Subscribe to the personal message event for this user
       socket.on("personal message", messageHandler);
     }
 
     return () => {
-      // Cleanup the event listener on unmount or when userId changes
       if (roomId) {
-        socket.off(`personal message`, messageHandler);
+        console.log("room left", roomId);
+        socket.emit("leave", roomId); // Leave the room when the component unmounts or selectedContact changes
+        socket.off("personal message", messageHandler);
       }
     };
   }, [selectedContact, dispatch, userInfo?.user_id]);
@@ -78,7 +80,6 @@ const IndividualMessageList = () => {
         content: data.text,
         sender_name: userInfo.name,
       };
-      console.log(message);
       // Emit the personal message event with an acknowledgment callback
       socket.emit("personal message", message);
       reset(); // Reset form input after sending message
@@ -87,52 +88,58 @@ const IndividualMessageList = () => {
 
   return (
     <>
-      {messagesList && messagesList.length > 0 && selectedContact && (
-        <IndividualMessageViewComponent
-          messagesList={messagesList}
-          selectedContact={selectedContact}
-        />
-      )}{" "}
-      <Grid
-        container
-        xs={12}
-        display={"flex"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-        {" "}
-        <IconButton size="large" type="submit" onClick={() => setOpen(true)}>
-          <AttachFileIcon />
-        </IconButton>
-        <form
-          style={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "1rem",
-            color: "#25D366",
-            alignItems: "center",
-          }}
-          noValidate
-          onSubmit={handleSubmit(sendMessageHandler)}
+      <Box display="flex" flexDirection="column" height="80vh">
+        <Box
+          flexGrow={1}
+          overflow="auto"
+          display="flex"
+          flexDirection="column-reverse"
         >
-          <TextField
-            margin="normal"
-            autoFocus
-            label="Message"
-            type="text"
-            fullWidth
-            variant="outlined"
-            {...register("text")}
-            helperText={errors.text?.message}
-            size="medium"
-          />
-
-          <IconButton type="submit">
-            <SendIcon />
+          {messagesList.length > 0 && selectedContact && (
+            <IndividualMessageViewComponent
+              messagesList={messagesList}
+              selectedContact={selectedContact}
+            />
+          )}
+        </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          padding="1rem"
+          borderTop="1px solid #ccc"
+        >
+          <IconButton size="large" type="submit" onClick={() => setOpen(true)}>
+            <AttachFileIcon />
           </IconButton>
-        </form>
-      </Grid>
+          <form
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "1rem",
+              color: "#25D366",
+              alignItems: "center",
+            }}
+            noValidate
+            onSubmit={handleSubmit(sendMessageHandler)}
+          >
+            <TextField
+              margin="normal"
+              autoFocus
+              label="Message"
+              type="text"
+              fullWidth
+              variant="outlined"
+              {...register("text")}
+              helperText={errors.text?.message}
+              size="medium"
+            />
+            <IconButton type="submit">
+              <SendIcon />
+            </IconButton>
+          </form>
+        </Box>
+      </Box>
       {userInfo && selectedContact && (
         <AddAttachmentDialog
           sender_id={userInfo.user_id}

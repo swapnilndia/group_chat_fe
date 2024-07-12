@@ -4,39 +4,16 @@ import {
   getPersonalMessageAction,
 } from "../actions/chatAsyncActions";
 import { Draft } from "immer";
-
-type MediumType = {
-  media_id: number;
-  file_name: string;
-  file_type: string;
-  file_size: number;
-  uploaded_by: number;
-  file_key: string;
-};
-
-export type MessageType = {
-  message_id: number;
-  sender_id: number;
-  sender_name: string;
-  receiver_id: number | null;
-  group_id: number | null;
-  message_type: string;
-  content: string | null;
-  media_id: number | null;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  Medium: MediumType | null;
-};
+import { MessageType } from "../../lib/types/message.types";
 
 type InitialStateType = {
-  personalMessageHistory: MessageType[] | null;
-  groupMessageHistory: MessageType[] | null;
+  personalMessageHistory: MessageType[];
+  groupMessageHistory: MessageType[];
 };
 
 const initialState: InitialStateType = {
-  personalMessageHistory: null,
-  groupMessageHistory: null,
+  personalMessageHistory: [],
+  groupMessageHistory: [],
 };
 
 const chatSlice = createSlice({
@@ -47,6 +24,7 @@ const chatSlice = createSlice({
       state: Draft<InitialStateType>,
       action: PayloadAction<MessageType>
     ) => {
+      console.log("hi from redux");
       if (state.personalMessageHistory) {
         state.personalMessageHistory.push(action.payload);
       } else {

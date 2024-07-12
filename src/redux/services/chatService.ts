@@ -1,38 +1,10 @@
+import {
+  GetMessageHistoryResponse,
+  SendGroupMessageType,
+  SendMessageResponse,
+  SendPersonalMessageType,
+} from "../../lib/types/message.types";
 import { apiHelperFunction } from "../../utils/apiHelper";
-
-type MessageType = {
-  message_id: number;
-  sender_id: number;
-  receiver_id: number | null;
-  group_id: number | null;
-  message_type: "TEXT" | "IMAGE" | "VIDEO";
-  content: string | null;
-  media_id: number | null;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-type SendPersonalMessageType = {
-  receiver_id: number;
-  content: string;
-};
-type SendGroupMessageType = {
-  group_id: number;
-  content: string;
-};
-
-type SendMessageResponse = {
-  status: number;
-  message: string;
-  data: MessageType;
-};
-
-type GetMessageHistoryResponse = {
-  status: number;
-  message: string;
-  data: MessageType[];
-};
 
 class chatService {
   static getInstance() {

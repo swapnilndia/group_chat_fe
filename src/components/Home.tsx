@@ -6,7 +6,6 @@ import { userInfoAction } from "../redux/actions/userAsyncActions";
 import { Grid, Paper } from "@mui/material";
 import Contact from "./Contact";
 import GroupDetailComponent from "./GroupDetailComponent";
-import IndividualComponent from "./IndividualComponent";
 import IndividualDetailComponent from "./IndividualDetailComponent";
 
 const defaultChat = {

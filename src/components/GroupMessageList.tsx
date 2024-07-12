@@ -13,25 +13,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { sendMessageSchema } from "../lib/schema";
 import { selectedGroupInfo } from "../redux/reducers/groupSlice";
 import { selectUserInfo } from "../redux/reducers/userSlice";
-import io from "socket.io-client";
 import GroupMessageViewComponent from "./GroupMessageViewComponent";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import AddAttachmentDialog_Group from "./AddAttachmentDialog_Group";
-
-const socket = io("http://localhost:3000");
+import socket from "../lib/socket";
+import { MessageType } from "../lib/types/message.types";
 const GroupMessageList = () => {
   const selectedGroup = useSelector(selectedGroupInfo);
   const messagesList = useSelector(selectGroupMessages);
   const loggedinUserInfo = useSelector(selectUserInfo);
-  console.log(selectedGroup, messagesList);
   const dispatch: AppDispatch = useDispatch();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (selectedGroup !== null) {
-      dispatch(getGroupMessageAction({ groupId: selectedGroup.group_id }));
-    }
-  }, [selectedGroup, dispatch]);
 
   const {
     register,
@@ -44,16 +36,17 @@ const GroupMessageList = () => {
     },
     resolver: yupResolver(sendMessageSchema),
   });
-
   useEffect(() => {
     if (selectedGroup !== null) {
       dispatch(getGroupMessageAction({ groupId: selectedGroup.group_id }));
     }
 
     const roomId = selectedGroup?.connectionKey;
-    socket.emit("join", roomId);
+    if (roomId) {
+      socket.emit("join", roomId);
+    }
     // Define the message handler
-    const messageHandler = (message) => {
+    const messageHandler = (message: MessageType) => {
       console.log(message);
       dispatch(receiveGroupMessage(message));
     };
@@ -64,9 +57,9 @@ const GroupMessageList = () => {
     }
 
     return () => {
-      // Cleanup the event listener on unmount or when userId changes
       if (roomId) {
-        socket.off(`group message`, messageHandler);
+        socket.emit("leave", roomId); // Leave the room when the component unmounts or selectedContact changes
+        socket.off("group message", messageHandler);
       }
     };
   }, [selectedGroup, dispatch]);
@@ -89,15 +82,12 @@ const GroupMessageList = () => {
 
   return (
     <>
-      {messagesList &&
-        messagesList.length > 0 &&
-        selectedGroup &&
-        loggedinUserInfo && (
-          <GroupMessageViewComponent
-            messagesList={messagesList}
-            loggedinUserInfo={loggedinUserInfo}
-          />
-        )}
+      {messagesList.length > 0 && selectedGroup && loggedinUserInfo && (
+        <GroupMessageViewComponent
+          messagesList={messagesList}
+          loggedinUserInfo={loggedinUserInfo}
+        />
+      )}
       <Grid item xs={12}>
         <IconButton size="large" type="submit" onClick={() => setOpen(true)}>
           <AttachFileIcon />

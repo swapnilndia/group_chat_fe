@@ -28,7 +28,6 @@ export default function AddAttachmentDialog({
   room_id: string;
 }) {
   const [file, setFile] = useState<File | null>(null);
-  const [uploadSuccess, setUploadSuccess] = useState<boolean>(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -110,7 +109,6 @@ export default function AddAttachmentDialog({
           };
           console.log(metadata);
           socket.emit("save media metadata", metadata);
-          setUploadSuccess(true);
           handleClose();
         }
       }
@@ -145,8 +143,6 @@ export default function AddAttachmentDialog({
               Cancel
             </Button>
           </DialogActions>
-
-          {uploadSuccess && <p>File uploaded and message sent successfully!</p>}
         </DialogContent>
       </Dialog>
     </React.Fragment>

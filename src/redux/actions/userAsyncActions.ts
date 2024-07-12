@@ -1,8 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { LoginInfoType } from "../../lib/types";
 import { UserService } from "../services/userService";
 import { SearchUserResponseType } from "../../lib/types/group.types";
 import { GroupService } from "../services/groupService";
+import { LoginInfoType } from "../../lib/types/user.types";
 
 export const loginAction = createAsyncThunk<string, LoginInfoType>(
   "loginAction",
