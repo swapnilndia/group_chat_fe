@@ -38,7 +38,6 @@ export default function AddAttachmentDialog_Group({
     const selectedFile = event.target.files?.[0] || null;
     setFile(selectedFile);
   };
-  console.log(file);
   const getSignedUrl = async (
     filename: string,
     contentType: string,
@@ -72,10 +71,8 @@ export default function AddAttachmentDialog_Group({
         },
         body: file,
       });
-      console.log("File uploaded successfully");
       return true;
     } catch (error) {
-      console.error("Error uploading file to S3:", error);
       return false;
     }
   };
@@ -89,7 +86,6 @@ export default function AddAttachmentDialog_Group({
     try {
       const fileFolder = file.type.split("/")[0];
       const key = `uploads/${fileFolder}/${Date.now()}-${file.name}`;
-      console.log(key);
       const signedUrl = await getSignedUrl(file.name, file.type, key);
       if (signedUrl) {
         const success = await uploadFileToS3(signedUrl, file);
@@ -105,7 +101,6 @@ export default function AddAttachmentDialog_Group({
             room_id: room_id, // Adjust as per your room ID logic
             file_key: key,
           };
-          console.log(metadata);
           socket.emit("save group media metadata", metadata);
           handleClose();
         }

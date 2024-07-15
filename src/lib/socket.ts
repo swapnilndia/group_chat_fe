@@ -1,7 +1,6 @@
 // socket.js
 import io from "socket.io-client";
-
-// const socket = io("http://localhost:3000");
-const socket = io("https://group-chat-be.swapnilndia.xyz");
+const Base_url = import.meta.env.VITE_BASE_URL_WS;
+const socket = io(Base_url);
 
 export default socket;

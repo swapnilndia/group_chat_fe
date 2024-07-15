@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, Method } from "axios";
+import { toast } from "react-toastify";
 
 interface ApiHelperOptions {
   method: Method;
@@ -131,7 +132,7 @@ export const apiHelperFunction = async <T>(
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMsg = error.response?.data?.message || error.message;
-      console.log(errorMsg);
+      toast(errorMsg);
       throw new Error(errorMsg);
     } else {
       throw new Error("An unknown error occurred");

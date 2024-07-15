@@ -51,7 +51,6 @@ class userService {
         includeAuth: false,
         data: data,
       });
-
       return response;
     } catch (error) {
       console.log(error);
@@ -69,6 +68,7 @@ class userService {
       });
       if (response.status === 200) {
         // window.location.href = "/";
+
         return response.data;
       }
     } catch (error) {

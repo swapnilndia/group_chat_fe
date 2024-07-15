@@ -7,12 +7,15 @@ import DownloadIcon from "@mui/icons-material/Download";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useState } from "react";
 import ViewMediaMessage from "./ViewMediaMessage";
+
 interface PresignedUrlResponse_GET {
   data: string;
   message: string;
   status: number;
 }
+
 const Base_url = import.meta.env.VITE_BASE_URL;
+
 const GroupMessageViewComponent = ({
   messagesList,
   loggedinUserInfo,
@@ -22,25 +25,27 @@ const GroupMessageViewComponent = ({
 }) => {
   const [open, setOpen] = useState(false);
   const [viewURL, setViewURL] = useState("");
-  const fetchPresignedUrl_GET = async (
-    key: string
-  ): Promise<PresignedUrlResponse_GET> => {
+
+  const fetchPresignedUrl_GET = async (key: string): Promise<string> => {
     try {
       const response = await axios.post<PresignedUrlResponse_GET>(
         `${Base_url}/messages/download-url`,
         { key }
       );
       console.log(response);
-      return response.data;
+      return response.data.data; // Ensure it returns the actual URL
     } catch (error) {
       console.error("Error fetching presigned URL:", error);
       throw new Error("Could not fetch presigned URL");
     }
   };
+
   const downloadFile = (url: string, fileName: string) => {
+    console.log("Downloading file:", url, fileName);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = fileName;
+    // anchor.download = fileName; // This forces the browser to download the file
+    anchor.target = "_blank"; // Open in a new tab (just in case)
     document.body.appendChild(anchor);
     anchor.click();
     document.body.removeChild(anchor);
@@ -53,19 +58,19 @@ const GroupMessageViewComponent = ({
     try {
       const url = await fetchPresignedUrl_GET(fileKey);
       if (url) {
-        downloadFile(url.data, fileName);
+        downloadFile(url, fileName);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
   const handleFetchPresignedUrl_View = async (fileKey: string) => {
     try {
       const url = await fetchPresignedUrl_GET(fileKey);
-      console.log(url);
       if (url) {
         setOpen(true);
-        setViewURL(url.data);
+        setViewURL(url);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -138,7 +143,7 @@ const GroupMessageViewComponent = ({
                         onClick={() =>
                           handleFetchPresignedUrl_Download(
                             chatMessage.Medium?.file_key || "",
-                            chatMessage.Medium?.file_name || "abc"
+                            chatMessage.Medium?.file_name || "download"
                           )
                         }
                       >
@@ -220,7 +225,7 @@ const GroupMessageViewComponent = ({
                         onClick={() =>
                           handleFetchPresignedUrl_Download(
                             chatMessage.Medium?.file_key || "",
-                            chatMessage.Medium?.file_name || "abc"
+                            chatMessage.Medium?.file_name || "download"
                           )
                         }
                       >

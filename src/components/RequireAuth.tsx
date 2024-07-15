@@ -4,6 +4,7 @@ import { selectLoggedInStatus } from "../redux/reducers/userSlice";
 
 const RequireAuth = () => {
   const isLoggedIn = useSelector(selectLoggedInStatus);
+  console.log(isLoggedIn);
   const location = useLocation();
 
   return isLoggedIn ? (

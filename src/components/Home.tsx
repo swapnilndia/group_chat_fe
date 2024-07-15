@@ -8,11 +8,8 @@ import Contact from "./Contact";
 import GroupDetailComponent from "./GroupDetailComponent";
 import IndividualDetailComponent from "./IndividualDetailComponent";
 
-const defaultChat = {
-  chatType: "IND",
-};
 const chatType = JSON.parse(
-  localStorage.getItem("chatType") || JSON.stringify(defaultChat)
+  localStorage.getItem("chatType") || JSON.stringify({ chatType: "IND" })
 );
 
 const Home = () => {
@@ -27,6 +24,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    console.log(group);
     localStorage.setItem("chatType", JSON.stringify(group));
   }, [group]);
 
