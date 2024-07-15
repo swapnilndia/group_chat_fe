@@ -123,7 +123,7 @@ const IndividualMessageViewComponent = ({
                     <Typography variant="body1" align="left">
                       {`${Math.ceil(
                         (chatMessage.Medium?.file_size || 0) / 1000
-                      )} Bytes `}
+                      )} Kb `}
                     </Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">

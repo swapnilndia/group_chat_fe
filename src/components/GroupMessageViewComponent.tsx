@@ -123,7 +123,9 @@ const GroupMessageViewComponent = ({
                   <Box display="flex" justifyContent="space-between">
                     {chatMessage.Medium?.file_name}
                     <Typography variant="body1" align="left">
-                      {`${chatMessage.Medium?.file_size} Bytes `}
+                      {`${Math.ceil(
+                        (chatMessage.Medium?.file_size || 0) / 1000
+                      )} Kb `}
                     </Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
@@ -205,7 +207,9 @@ const GroupMessageViewComponent = ({
                   <Box display="flex" justifyContent="space-between">
                     {chatMessage.Medium?.file_name}
                     <Typography variant="body1" align="left">
-                      {`${chatMessage.Medium?.file_size} Bytes `}
+                      {`${Math.ceil(
+                        (chatMessage.Medium?.file_size || 0) / 1000
+                      )} Kb `}
                     </Typography>
                   </Box>
                   <Box display="flex" justifyContent="space-between">
